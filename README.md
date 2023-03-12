@@ -36,6 +36,8 @@ https://scholar.google.com/citations?user=BjCi4AgAAAAJ&hl=en
 </a>
 </p>
 
+<br>
+</br>
 
 ## Other books by Basuki Rahmat, can be found at:
 
