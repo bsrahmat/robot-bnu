@@ -20,6 +20,8 @@ https://fitri.academia.edu/BasukiRahmat
 
 https://www.researchgate.net/profile/Basuki-Rahmat-2
 
+https://scholar.google.com/citations?user=BjCi4AgAAAAJ&hl=en
+
 
 ## Buy the printed version of this book at Shopee:
 
