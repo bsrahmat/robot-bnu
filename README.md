@@ -39,7 +39,7 @@ https://scholar.google.com/citations?user=BjCi4AgAAAAJ&hl=en
 <br>
 </br>
 
-## Other books by Basuki Rahmat, can be found at:
+## Other books by the Author can be found at:
 
 https://www.io-t.net/
 
