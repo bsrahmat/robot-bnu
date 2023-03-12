@@ -14,7 +14,7 @@ The book link can be accessed at the address: https://www.academia.edu/73452730.
 <br>
 </br>
 
-## Publications related to this book include the following papers:
+## An example of a publication related to this book:
 
 <a href="https://www.academia.edu/98358705" target="_blank">Deep Learning - Based Object Recognition Robot Control Via Web And Mobile Using An Internet of Things (IoT)
 Connection</a>
