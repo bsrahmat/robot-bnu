@@ -8,10 +8,12 @@ This is a collection of scripts written using the Python Jupyter Notebook. This 
 </p>
 
 
+
 ## Publications related to this book include the following papers:
 
 <a href="https://www.academia.edu/98358705" target="_blank">Deep Learning - Based Object Recognition Robot Control Via Web And Mobile Using An Internet of Things (IoT)
 Connection</a>
+
 
 
 ## Other publications by the Author:
@@ -21,6 +23,7 @@ https://fitri.academia.edu/BasukiRahmat
 https://www.researchgate.net/profile/Basuki-Rahmat-2
 
 https://scholar.google.com/citations?user=BjCi4AgAAAAJ&hl=en
+
 
 
 ## Buy the printed version of this book at Shopee:
