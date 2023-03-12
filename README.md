@@ -44,6 +44,6 @@ https://scholar.google.com/citations?user=BjCi4AgAAAAJ&hl=en
 https://www.io-t.net/
 
 <p align="center">
-<a href="https://www.io-t.net/" target="_blank"><img src="https://github.com/bsrahmat/robot-bnu/blob/main/iot.png" alt="" class="img-responsive" width="400">
+<a href="https://www.io-t.net/" target="_blank"><img src="https://github.com/bsrahmat/robot-bnu/blob/main/iot.png" alt="" class="img-responsive" width="500">
 </a>
 </p>
