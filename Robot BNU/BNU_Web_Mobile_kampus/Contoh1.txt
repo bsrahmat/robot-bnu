@@ -1,0 +1,184 @@
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+
+int sensorPin = A0;
+int heaterPin = D0;
+int fanPin = D1;
+
+String Topic;
+String Payload;
+
+float error;
+float eIntegral;
+float eDerivatif;
+float eBefore = 0;
+float Kp, Ki, Kd;
+float setPoint;
+float respon=200;
+int autoSet = 0;
+float Derror;
+
+int maxPwm = 255;
+
+//Variabel untuk menyimpan data suhu
+float suhu = 00;
+
+const char* ssid = "wifi@yah";
+const char* password = "H4n1s4_sby";
+
+#define mqttServer "tailor.cloudmqtt.com"
+#define mqttPort 13718
+#define mqttUser "iwfywzxr"
+#define mqttPassword "wpWz426nkZx6"
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+void receivedCallback(char* topic, byte* payload, unsigned int length) {
+  Topic = topic;
+  char autoS[100];
+  int i;
+  for (i=0;i<length;i++){
+    autoS[i] = payload[i];
+  }
+  autoS[i] = '\0';
+  
+  Payload = String(autoS);  
+}
+
+void setup() {
+  pinMode(heaterPin, OUTPUT);
+  pinMode(fanPin, OUTPUT);
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi..");
+  }
+ 
+  Serial.println("Connected to the WiFi network");
+ 
+  client.setServer(mqttServer, mqttPort);
+   client.setCallback(receivedCallback);
+ 
+  while (!client.connected()) {
+    Serial.println("Connecting to MQTT...");
+ 
+    if (client.connect("ESP32Client", mqttUser, mqttPassword )) {
+ 
+      Serial.println("connected");
+ 
+    } else {
+      Serial.print("failed with state ");
+      Serial.print(client.state());
+      delay(2000);
+    }
+  }
+  client.subscribe("autoSet");
+  client.subscribe("Kp");
+  client.subscribe("Ki");
+  client.subscribe("Kd");
+  client.subscribe("setPoint");
+}
+
+String convertFloatToString(float suhu)
+{ // begin function
+  char temp[10];
+  String tempAsString;
+    // perform conversion
+    dtostrf(suhu,1,2,temp);
+    // create string object
+  tempAsString = String(temp);
+  return tempAsString;
+}
+
+void loop() {
+  client.loop();
+  if(Topic=="autoSet"){
+    autoSet=Payload.toInt();
+  }
+   if(Topic=="Kp"){
+    Kp=Payload.toFloat()/10;
+  }
+   if(Topic=="Ki"){
+    Ki=Payload.toFloat()/10;
+  }
+   if(Topic=="Kd"){
+    Kd=Payload.toFloat()/10;
+  }
+   if(Topic=="setPoint"){
+    setPoint=Payload.toFloat();
+  }
+  Serial.println("<-------------------------->");
+  Serial.println(autoSet);
+  Serial.println(Kp);
+  Serial.println(Ki);
+  Serial.println(Kd);
+  Serial.println(setPoint);
+  Serial.println("<-------------------------->");
+  
+  if(autoSet==1){
+    respon = hitungPID(setPoint,suhu);
+  }else if(autoSet == 0){
+    respon = hitungPID(setPoint,suhu);
+  }
+  if (respon > 0){
+    if(respon > maxPwm){
+      respon = maxPwm;
+    }
+    analogWrite(heaterPin, respon*4.01);
+    analogWrite(fanPin, 0);
+    client.publish("respon", convertFloatToString(respon).c_str());
+  
+    client.publish("fan", "0");
+  
+  } else if(respon < 0){
+    float fan = respon*-1;
+    if(fan > maxPwm){
+      fan = maxPwm;
+      respon = fan*-1;
+    }
+    
+    analogWrite(heaterPin, 0);
+    analogWrite(fanPin, fan*4.01);
+    client.publish("respon", "0");
+
+    client.publish("fan", convertFloatToString(fan).c_str());
+ 
+  }else{
+    analogWrite(heaterPin, 0);
+    analogWrite(fanPin, 0);
+    client.publish("respon", "0");
+
+    client.publish("fan", "0");
+  }
+  Serial.print(setPoint);
+  Serial.print(" - ");
+  Serial.print(suhu);
+  Serial.print(" - ");
+  Serial.println(respon);
+  getSuhu();
+  client.publish("suhu", convertFloatToString(suhu).c_str());
+  client.subscribe("suhu");
+  delay(100);
+}
+
+float hitungPID(float sp, float suhu){
+  error = sp - suhu;
+  eIntegral += error;
+  if(eIntegral > 1500){
+    eIntegral = 1500;
+  }else if (eIntegral < -1500){
+    eIntegral = -1500;
+  }
+  eDerivatif = error - eBefore;
+  eBefore = error;
+  return (Kp * error) + (Ki * eIntegral) + (Kd * eDerivatif);
+}
+
+void getSuhu(){
+  suhu = (analogRead(sensorPin)*3.0*100.0)/1023;
+}

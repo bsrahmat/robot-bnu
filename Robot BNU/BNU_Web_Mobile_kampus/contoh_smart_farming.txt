@@ -1,0 +1,138 @@
+
+#include <ESP8266WiFi.h>
+
+
+//#include <WiFi.h>
+#include <PubSubClient.h>
+
+const char* ssid = "4G UFI_38C";
+const char* password = "1234567890";
+
+
+#define mqttServer "m11.cloudmqtt.com"
+#define mqttPort 17793
+#define mqttUser "qfxmofsm"
+#define mqttPassword "gzcNVvKiGj_-"
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+const int relay=4;
+int j;
+int c;
+int batas_atas;
+int batas_bawah;
+
+
+void receivedCallback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message received: ");
+  Serial.println(topic);
+
+  Serial.print("payload: ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+  /* we got '1' -> on */
+
+  if (((char)payload[0] == '1')&&(c==0)) {
+    digitalWrite(relay, LOW); 
+  } else if(((char)payload[0] == '0')&&(c==0)) {
+    /* we got '0' -> on */
+    digitalWrite(relay, HIGH);
+  }
+    else if((char)payload[0] == '5') {
+    /* we got '0' -> on */
+    c=1;
+  }
+  else if((char)payload[0] == '6') {
+    /* we got '0' -> on */
+    c=0;
+  }
+  
+  
+
+}
+void setup() {
+  // put your setup code here, to run once:
+  
+  
+  Serial.begin(115200);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  digitalWrite(relay,HIGH);
+  batas_atas=500;
+  batas_bawah=300;
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi..");
+  }
+ 
+  Serial.println("Connected to the WiFi network");
+  pinMode(relay,OUTPUT);
+ 
+  client.setServer(mqttServer, mqttPort);
+   client.setCallback(receivedCallback);
+ 
+  while (!client.connected()) {
+    Serial.println("Connecting to MQTT...");
+ 
+    if (client.connect("ESP32Client", mqttUser, mqttPassword )) {
+ 
+      Serial.println("connected");
+ 
+    } else {
+ 
+      Serial.print("failed with state ");
+      Serial.print(client.state());
+      delay(2000);
+ 
+    }
+  }
+  client.subscribe("tombol2");
+  client.subscribe("control");
+  j=10;
+  c=1;
+  
+ 
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  float sensor;
+ /* sensor= analogRead(A0);
+  Serial.println(sensor);
+  digitalWrite(relay,HIGH);
+  delay(2000);
+  digitalWrite(relay,LOW);
+  delay(2000);*/
+
+   char hasil[4];
+  client.loop();
+  
+ if (j==10)
+ {
+ sensor= analogRead(A0);
+  
+  Serial.println(sensor);
+  
+  dtostrf(sensor, 1, 0, hasil);
+  client.publish("Kelembaban",hasil);
+  j=0;
+  if (c==1)
+  {
+  if (sensor<batas_bawah)
+  {
+     digitalWrite(relay, HIGH);
+  }
+  if (sensor>batas_atas)
+  {
+     digitalWrite(relay, LOW);
+  }
+ }
+ } 
+ j++;
+ delay (200);
+
+
+}
