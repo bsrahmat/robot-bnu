@@ -17,8 +17,8 @@ const char* password = "wifi_password";
 
 #define mqttServer "tailor.cloudmqtt.com"
 #define mqttPort 13718
-#define mqttUser "iwfywzxr"
-#define mqttPassword "wpWz426nkZx6"
+#define mqttUser "user"
+#define mqttPassword "password"
 
 WiFiServer server(80);
 WiFiClient espClient;
