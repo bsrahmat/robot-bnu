@@ -23,13 +23,13 @@ int maxPwm = 255;
 //Variabel untuk menyimpan data suhu
 float suhu = 00;
 
-const char* ssid = "wifi@yah";
-const char* password = "H4n1s4_sby";
+const char* ssid = "wifi_name";
+const char* password = "wifi_password";
 
 #define mqttServer "tailor.cloudmqtt.com"
 #define mqttPort 13718
-#define mqttUser "iwfywzxr"
-#define mqttPassword "wpWz426nkZx6"
+#define mqttUser "user"
+#define mqttPassword "password"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
