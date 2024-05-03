@@ -7,11 +7,8 @@
 String Topic;
 String Payload;
 
-const char* ssid = "wifi@yah";
-const char* password = "H4n1s4_sby";
-
-//const char* ssid = "alamkubur";
-//const char* password = "Surg4f1rd4us";
+const char* ssid = "wifi_name";
+const char* password = "wifi_password";
 
 #define IN_1 D3 // Maju
 #define IN_2 D4 // Mundur
